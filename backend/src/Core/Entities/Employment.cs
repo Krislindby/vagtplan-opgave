@@ -14,8 +14,8 @@ namespace Domain.Entities
         public DateOnly EndDate { get; set; }
 
         //FK refererer til den person, som denne ansættelse tilhører.
-        public Guid PersonId { get; set; }
-        public Person? Person { get; set; }
+        public Guid UserId { get; set; }
+        public User? User { get; set; }
 
         //FK refererer til det afsnit, som ansættelsen er knyttet til.
         public Guid WardId { get; set; }

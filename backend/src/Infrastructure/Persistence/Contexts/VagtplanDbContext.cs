@@ -17,22 +17,22 @@ namespace Infrastructure.Persistence.Contexts
         public DbSet<PlanningPeriod> PlanningPeriods { get; set; }
         public DbSet<Ward> Wards { get; set; }
         public DbSet<StaffGroup> StaffGroups { get; set; }
-        public DbSet<Person> People { get; set; }
+        public DbSet<User> People { get; set; }
         public DbSet<Employment> Employments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Person>()
+            modelBuilder.Entity<User>()
                 .HasIndex(p => p.Email)
                 .IsUnique();
 
             modelBuilder.Entity<Employment>(entity =>
             {
-                entity.HasOne(e => e.Person)
+                entity.HasOne(e => e.User)
                       .WithMany()
-                      .HasForeignKey(e => e.PersonId)
+                      .HasForeignKey(e => e.UserId)
                       .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Ward)

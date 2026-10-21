@@ -2,7 +2,7 @@
 
 namespace Domain.Entities
 {
-    public class Person : BaseEntity
+    public class User : BaseEntity
     {
         [Required]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]

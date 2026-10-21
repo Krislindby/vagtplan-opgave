@@ -32,7 +32,6 @@
   <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="Mapping\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
