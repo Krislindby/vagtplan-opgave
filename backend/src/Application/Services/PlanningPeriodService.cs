@@ -1,4 +1,4 @@
-﻿using Domain.DTO;
+﻿using Domain.DTO.PlanningPeriods;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;

@@ -20,6 +20,14 @@ builder.Services.AddDbContext<VagtplanDbContext>(options =>
 
 builder.Services.AddScoped<IPlanningPeriodRepository, PlanningPeriodRepository>();
 builder.Services.AddScoped<IPlanningPeriodService, PlanningPeriodService>();
+builder.Services.AddScoped<IWardRepository, WardRepository>();
+builder.Services.AddScoped<IWardService, WardService>();
+builder.Services.AddScoped<IStaffGroupRepository, StaffGroupRepository>();
+builder.Services.AddScoped<IStaffGroupService, StaffGroupService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmploymentRepository, EmploymentRepository>();
+builder.Services.AddScoped<IEmploymentService, EmploymentService>();
 
 builder.Services.AddCors(options =>
 {

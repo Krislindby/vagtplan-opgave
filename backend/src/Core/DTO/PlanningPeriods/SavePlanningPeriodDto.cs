@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.DTO
+namespace Domain.DTO.PlanningPeriods
 {
     //Modtages fra klienten ved oprettelse og redigering af planlægningsperioder
     public class SavePlanningPeriodDto

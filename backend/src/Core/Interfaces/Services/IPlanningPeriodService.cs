@@ -1,4 +1,4 @@
-﻿using Domain.DTO;
+﻿using Domain.DTO.PlanningPeriods;
 
 namespace Domain.Interfaces.Services
 {

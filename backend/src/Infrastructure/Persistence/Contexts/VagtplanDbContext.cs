@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.Contexts
         public DbSet<PlanningPeriod> PlanningPeriods { get; set; }
         public DbSet<Ward> Wards { get; set; }
         public DbSet<StaffGroup> StaffGroups { get; set; }
-        public DbSet<User> People { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Employment> Employments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

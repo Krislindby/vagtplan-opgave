@@ -32,13 +32,13 @@ namespace Infrastructure.Migrations
                     b.Property<int>("HoursPerWeek")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("PersonId")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("StaffGroupId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("WardId")
@@ -46,46 +46,13 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
-
                     b.HasIndex("StaffGroupId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("WardId");
 
                     b.ToTable("Employments");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Person", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsStaff")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("People");
                 });
 
             modelBuilder.Entity("Domain.Entities.PlanningPeriod", b =>
@@ -132,6 +99,39 @@ namespace Infrastructure.Migrations
                     b.ToTable("StaffGroups");
                 });
 
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsStaff")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Domain.Entities.Ward", b =>
                 {
                     b.Property<Guid>("Id")
@@ -157,15 +157,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Employment", b =>
                 {
-                    b.HasOne("Domain.Entities.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.StaffGroup", "StaffGroup")
                         .WithMany()
                         .HasForeignKey("StaffGroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -175,9 +175,9 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Person");
-
                     b.Navigation("StaffGroup");
+
+                    b.Navigation("User");
 
                     b.Navigation("Ward");
                 });

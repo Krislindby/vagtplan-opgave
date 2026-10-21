@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DTO
+namespace Domain.DTO.PlanningPeriods
 {
     //Sendes ud til klienten ved hentning af planlægningsperioder
     public class PlanningPeriodDto
