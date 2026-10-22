@@ -10,8 +10,10 @@ const menuItems = [
 export default function AppLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-white text-slate-900">
-      <header className="border-b border-slate-200 px-6 py-4">
-        <h1 className="text-xl font-bold">FairPlan</h1>
+        <header className="flex items-center gap-3 border-b border-slate-200 px-6 py-4">
+            {/* Plads til logo. Erstattes med et billede, når et er leveret. */}
+            <div className="h-9 w-9 rounded-lg bg-slate-200" />
+            <h1 className="text-xl font-bold">FairPlan</h1>
       </header>
 
       <div className="flex flex-1">

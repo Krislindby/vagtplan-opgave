@@ -5,6 +5,14 @@ import type { Ward, SaveWard } from "../types";
 
 const emptyForm: SaveWard = { name: "", color: "#3c5a78" };
 
+//Fast palet med tydeligt forskellige farver, så afsnit kan kendes fra hinanden.
+const PALETTE = [
+  "#e5484d", "#f76808", "#ffb224", "#46a758", "#12a594",
+  "#0091ff", "#3c5a78", "#8e4ec6", "#d6409f", "#6e6e6e",
+  "#ff8b7e", "#c4a000", "#99d52a", "#3dd68c", "#00c2d7",
+  "#52a9ff", "#9c7cf4", "#f96bb7", "#a18072", "#1c2024",
+];
+
 export default function WardsSection() {
   const [wards, setWards] = useState<Ward[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +32,10 @@ export default function WardsSection() {
     load();
   }, []);
 
+  //Vælger automatisk en ledig farve, når man opretter et nyt afsnit.
   function startCreate() {
-    setForm(emptyForm);
+    const free = PALETTE.find((c) => !wards.some((w) => w.color === c));
+    setForm({ ...emptyForm, color: free ?? emptyForm.color });
     setEditingId(null);
     setError(null);
     setShowForm(true);
@@ -82,6 +92,13 @@ export default function WardsSection() {
     },
   ];
 
+  //Viser kun ledige farver. Afsnittets egen farve bliver stående, når det redigeres.
+  const availableColors = PALETTE.filter(
+    (color) =>
+      color === form.color ||
+      !wards.some((w) => w.color === color && w.id !== editingId)
+  );
+
   return (
     <div>
       <div className="mb-4 flex justify-end">
@@ -105,7 +122,7 @@ export default function WardsSection() {
           onSubmit={handleSubmit}
           className="mb-6 rounded-md border border-slate-200 bg-[#f8fafc] p-4"
         >
-          <div className="flex flex-wrap items-end gap-4">
+          <div className="flex flex-wrap items-start gap-8">
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600">
                 Navn
@@ -118,17 +135,26 @@ export default function WardsSection() {
                 className="w-64 rounded-md border border-slate-300 px-3 py-2 text-sm"
               />
             </div>
+
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600">
                 Farve
               </label>
-              <input
-                required
-                type="color"
-                value={form.color}
-                onChange={(e) => setForm({ ...form, color: e.target.value })}
-                className="h-9 w-16 rounded-md border border-slate-300"
-              />
+              <div className="flex w-72 flex-wrap gap-2">
+                {availableColors.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setForm({ ...form, color })}
+                    className={`h-8 w-8 rounded-full border-2 ${
+                      form.color === color
+                        ? "border-slate-900"
+                        : "border-transparent"
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
