@@ -52,3 +52,6 @@ _ReSharper.Caches/
 *.gcno
 *.gcov
 *.pyc
+*.db
+*.db-shm
+*.db-wal
