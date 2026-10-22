@@ -67,7 +67,7 @@ export default function WardsSection() {
   }
 
   const columns: Column<Ward>[] = [
-    { key: "name", header: "Navn", value: (w) => w.name },
+    { key: "name", header: "Navn", value: (w) => w.name, filterable: true },
     {
       key: "color",
       header: "Farve",

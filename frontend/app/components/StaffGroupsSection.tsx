@@ -67,7 +67,7 @@ export default function StaffGroupsSection() {
   }
 
   const columns: Column<StaffGroup>[] = [
-    { key: "name", header: "Navn", value: (s) => s.name },
+    { key: "name", header: "Navn", value: (s) => s.name, filterable: true },
   ];
 
   return (

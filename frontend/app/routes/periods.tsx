@@ -74,7 +74,7 @@ export default function Periods() {
   }
 
   const columns: Column<PlanningPeriod>[] = [
-    { key: "name", header: "Navn", value: (p) => p.name },
+    { key: "name", header: "Navn", value: (p) => p.name, filterable: true },
     { key: "start", header: "Start", value: (p) => formatDate(p.startDate) },
     { key: "end", header: "Slut", value: (p) => formatDate(p.endDate) },
   ];
