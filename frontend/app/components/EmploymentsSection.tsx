@@ -28,6 +28,7 @@ export default function EmploymentsSection() {
   const [form, setForm] = useState<SaveEmployment>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   //Henter både ansættelserne og de tre lister, dropdowns skal bruge.
   async function load() {
@@ -44,6 +45,8 @@ export default function EmploymentsSection() {
       setStaffGroups(s);
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -112,7 +115,7 @@ export default function EmploymentsSection() {
     { key: "end", header: "Slut", value: (e) => formatDate(e.endDate) },
   ];
 
-    return (
+  return (
     <div>
       <div className="mb-4 flex justify-end">
         <button
@@ -151,6 +154,11 @@ export default function EmploymentsSection() {
                   <option key={u.id} value={u.id}>{u.name}</option>
                 ))}
               </select>
+              {staffUsers.length === 0 && (
+                <p className="mt-1 w-56 text-xs text-amber-700">
+                  Opret først en adgang med rollen Personale under fanen Adgangsstyring.
+                </p>
+              )}
             </div>
 
             <div>
@@ -163,11 +171,16 @@ export default function EmploymentsSection() {
                 onChange={(e) => setForm({ ...form, wardId: e.target.value })}
                 className="w-56 rounded-md border border-slate-300 px-3 py-2 text-sm"
               >
-                <option value="">Vælg afsnit</option>
+                                <option value="">Vælg afsnit</option>
                 {wards.map((w) => (
                   <option key={w.id} value={w.id}>{w.name}</option>
                 ))}
               </select>
+              {wards.length === 0 && (
+                <p className="mt-1 w-56 text-xs text-amber-700">
+                  Opret først et afsnit under fanen Organisering.
+                </p>
+              )}
             </div>
 
             <div>
@@ -180,11 +193,16 @@ export default function EmploymentsSection() {
                 onChange={(e) => setForm({ ...form, staffGroupId: e.target.value })}
                 className="w-56 rounded-md border border-slate-300 px-3 py-2 text-sm"
               >
-                <option value="">Vælg personalegruppe</option>
+                                <option value="">Vælg personalegruppe</option>
                 {staffGroups.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
+              {staffGroups.length === 0 && (
+                <p className="mt-1 w-56 text-xs text-amber-700">
+                  Opret først en personalegruppe under fanen Organisering.
+                </p>
+              )}
             </div>
 
             <div>
@@ -222,6 +240,7 @@ export default function EmploymentsSection() {
               <input
                 required
                 type="date"
+                min={form.startDate}
                 value={form.endDate}
                 onChange={(e) => setForm({ ...form, endDate: e.target.value })}
                 className="rounded-md border border-slate-300 px-3 py-2 text-sm"
@@ -253,6 +272,7 @@ export default function EmploymentsSection() {
         onEdit={startEdit}
         onDelete={handleDelete}
         emptyText="Ingen ansættelser oprettet endnu."
+        loading={loading}
       />
     </div>
   );

@@ -12,6 +12,7 @@ export default function Periods() {
   const [form, setForm] = useState<SavePlanningPeriod>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   //Henter listen fra API'et. Kaldes når siden åbnes og efter hver ændring.
   async function load() {
@@ -19,6 +20,8 @@ export default function Periods() {
       setPeriods(await api.get<PlanningPeriod[]>("/planningperiods"));
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -123,6 +126,7 @@ export default function Periods() {
               <input
                 required
                 type="date"
+                max={form.endDate}
                 value={form.startDate}
                 onChange={(e) => setForm({ ...form, startDate: e.target.value })}
                 className="rounded-md border border-slate-300 px-3 py-2 text-sm"
@@ -135,6 +139,7 @@ export default function Periods() {
               <input
                 required
                 type="date"
+                min={form.startDate}
                 value={form.endDate}
                 onChange={(e) => setForm({ ...form, endDate: e.target.value })}
                 className="rounded-md border border-slate-300 px-3 py-2 text-sm"
@@ -165,7 +170,8 @@ export default function Periods() {
         rows={periods}
         onEdit={startEdit}
         onDelete={handleDelete}
-        emptyText="Ingen perioder oprettet endnu."
+        emptyText="Der er ingen perioder."
+        loading={loading}
       />
     </div>
   );

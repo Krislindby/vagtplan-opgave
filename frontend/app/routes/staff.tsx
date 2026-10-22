@@ -9,6 +9,7 @@ export default function StaffPage() {
   const [selectedPeriodId, setSelectedPeriodId] = useState("");
   const [staff, setStaff] = useState<Staff[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   //Henter perioderne til dropdownen og vælger den første.
   useEffect(() => {
@@ -17,8 +18,12 @@ export default function StaffPage() {
       .then((data) => {
         setPeriods(data);
         if (data.length > 0) setSelectedPeriodId(data[0].id);
+        else setLoading(false); //Ingen perioder: der kommer ikke flere kald.
       })
-      .catch((e) => setError((e as Error).message));
+      .catch((e) => {
+        setError((e as Error).message);
+        setLoading(false);
+      });
   }, []);
 
   //Kører igen, hver gang brugeren vælger en anden periode.
@@ -28,10 +33,13 @@ export default function StaffPage() {
       return;
     }
 
+    setLoading(true);
+
     api
       .get<Staff[]>(`/staff?planningPeriodId=${selectedPeriodId}`)
       .then(setStaff)
-      .catch((e) => setError((e as Error).message));
+      .catch((e) => setError((e as Error).message))
+      .finally(() => setLoading(false));
   }, [selectedPeriodId]);
 
   const columns: Column<Staff>[] = [
@@ -41,7 +49,7 @@ export default function StaffPage() {
     { key: "hours", header: "Timer/uge", value: (s) => String(s.hoursPerWeek) },
   ];
 
-    const selectedPeriod = periods.find((p) => p.id === selectedPeriodId);
+  const selectedPeriod = periods.find((p) => p.id === selectedPeriodId);
 
   return (
     <div>
@@ -68,11 +76,11 @@ export default function StaffPage() {
               {p.name}
             </option>
           ))}
+        
         </select>
-
-        {selectedPeriod && (
-          <p className="mt-2 text-sm text-slate-600">
-            {formatDate(selectedPeriod.startDate)} til {formatDate(selectedPeriod.endDate)}
+        {periods.length === 0 && (
+          <p className="mt-1 w-72 text-xs text-amber-700">
+            Opret først en periode under fanen Perioder.
           </p>
         )}
       </div>
@@ -81,6 +89,7 @@ export default function StaffPage() {
         columns={columns}
         rows={staff}
         emptyText="Ingen ansatte i den valgte periode."
+        loading={loading}
       />
     </div>
   );

@@ -15,6 +15,7 @@ interface Props<T> {
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   emptyText?: string;
+  loading?: boolean;
 }
 
 export default function DataTable<T extends { id: string }>({
@@ -23,6 +24,7 @@ export default function DataTable<T extends { id: string }>({
   onEdit,
   onDelete,
   emptyText = "Ingen rækker endnu.",
+  loading = false,
 }: Props<T>) {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -146,7 +148,7 @@ export default function DataTable<T extends { id: string }>({
                 colSpan={columns.length + 1}
                 className="px-4 py-6 text-center text-slate-500"
               >
-                {emptyText}
+                {loading ? "Henter…" : emptyText}
               </td>
             </tr>
           )}
