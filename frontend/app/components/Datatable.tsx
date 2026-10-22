@@ -76,11 +76,9 @@ export default function DataTable<T extends { id: string }>({
     }
   }
 
-  function distinctValues(column: Column<T>) {
-    return [...new Set(rows.map((r) => column.value(r)))].sort((a, b) =>
-      a.localeCompare(b, "da")
-    );
-  }
+    function distinctValues(column: Column<T>) {
+    return [...new Set(rows.map((r) => column.value(r)))];
+}
 
   const filterableColumns = columns.filter((c) => c.filterable);
 
