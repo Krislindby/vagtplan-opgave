@@ -54,14 +54,15 @@ namespace Application.Services
             var ward = await _repository.GetByIdAsync(id)
                 ?? throw new KeyNotFoundException($"Afsnittet med id {id} blev ikke fundet.");
 
-            ward.Name = name;
-            ward.Color = dto.Color;
-
+            //Afsnittets eget id sendes med, så det ikke tæller som dublet af sig selv.
             if (await _repository.NameExistsAsync(name, id))
                 throw new ArgumentException("Der findes allerede et afsnit med det navn.");
 
             if (await _repository.ColorExistsAsync(dto.Color, id))
                 throw new ArgumentException("Farven er allerede i brug af et andet afsnit.");
+
+            ward.Name = name;
+            ward.Color = dto.Color;
 
             await _repository.UpdateAsync(ward);
         }

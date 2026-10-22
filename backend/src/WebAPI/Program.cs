@@ -1,6 +1,7 @@
 using Application.Services;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Infrastructure.Persistence;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VagtplanDbContext>();
     db.Database.Migrate();
+    DbSeeder.Seed(db);
 }
 
 if (app.Environment.IsDevelopment())

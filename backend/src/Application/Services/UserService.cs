@@ -51,6 +51,11 @@ namespace Application.Services
             //Brugerens eget id sendes med, så e-mailen ikke tæller som dublet af sig selv.
             await ValidateAsync(dto, id);
 
+            //Rollen Personale kræves for at kunne ansættes. Den må derfor ikke fjernes,
+            //så længe brugeren har ansættelser — ellers kunne reglen omgås bagefter.
+            if (user.IsStaff && !dto.IsStaff && await _repository.HasEmploymentsAsync(id))
+                throw new ArgumentException("Rollen Personale kan ikke fjernes, fordi brugeren har ansættelser.");
+
             user.Name = dto.Name;
             user.Email = dto.Email;
             user.IsAdmin = dto.IsAdmin;
