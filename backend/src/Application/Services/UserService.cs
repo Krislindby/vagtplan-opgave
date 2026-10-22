@@ -46,7 +46,7 @@ namespace Application.Services
         public async Task UpdateAsync(Guid id, SaveUserDto dto)
         {
             var user = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"User with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Brugeren med id {id} blev ikke fundet.");
 
             //Brugerens eget id sendes med, så e-mailen ikke tæller som dublet af sig selv.
             await ValidateAsync(dto, id);
@@ -62,11 +62,11 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             var user = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"User with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Brugeren med id {id} blev ikke fundet.");
 
             //Opgavens regel: brugere med ansættelser må ikke slettes.
             if (await _repository.HasEmploymentsAsync(id))
-                throw new ArgumentException("The user cannot be deleted because they have employments.");
+                throw new ArgumentException("Brugeren kan ikke slettes, fordi der er tilknyttede ansættelser.");
 
             await _repository.DeleteAsync(user);
         }
@@ -75,10 +75,10 @@ namespace Application.Services
         private async Task ValidateAsync(SaveUserDto dto, Guid? excludeId)
         {
             if (!dto.IsAdmin && !dto.IsStaff)
-                throw new ArgumentException("The user must have at least one role.");
+                throw new ArgumentException("Brugeren skal have mindst én rolle.");
 
             if (await _repository.EmailExistsAsync(dto.Email, excludeId))
-                throw new ArgumentException("The email is already in use.");
+                throw new ArgumentException("E-mailen er allerede i brug.");
         }
 
         //CreatedAt kommer ikke med ud til klienten.

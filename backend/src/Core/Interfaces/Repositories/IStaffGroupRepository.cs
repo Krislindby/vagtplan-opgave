@@ -12,5 +12,8 @@ namespace Domain.Interfaces.Repositories
 
         //Bruges til reglen om, at en personalegruppe med ansættelser ikke må slettes.
         Task<bool> HasEmploymentsAsync(Guid staffGroupId);
+
+        //Bruges til reglen om, at to personalegrupper ikke må have samme navne.
+        Task<bool> NameExistsAsync(string name, Guid? excludeId = null);
     }
 }

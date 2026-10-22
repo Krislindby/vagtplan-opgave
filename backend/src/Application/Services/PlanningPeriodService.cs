@@ -59,7 +59,7 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             var period = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Planning period with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Perioden med id {id} blev ikke fundet.");
 
             await _repository.DeleteAsync(period);
         }
@@ -68,10 +68,10 @@ namespace Application.Services
         private async Task ValidateAsync(SavePlanningPeriodDto dto, Guid? excludeId)
         {
             if (dto.StartDate > dto.EndDate)
-                throw new ArgumentException("Start date must be before or equal to end date.");
+                throw new ArgumentException("Startdato skal være før eller samme dag som slutdato.");
 
             if (await _repository.HasOverlapAsync(dto.StartDate, dto.EndDate, excludeId))
-                throw new ArgumentException("The period overlaps an existing period.");
+                throw new ArgumentException("Perioden overlapper en eksisterende periode.");
         }
 
         //CreatedAt kommer ikke med ud til klienten.

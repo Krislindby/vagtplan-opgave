@@ -6,11 +6,11 @@ namespace Domain.DTO
     public class SaveWardDto
     {
         [Required]
-        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        [StringLength(100, ErrorMessage = "Navn må højst være 100 tegn.")]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [RegularExpression("^#([0-9A-Fa-f]{6})$", ErrorMessage = "Color must be a valid HEX code, e.g. #FF0000.")]
+        [RegularExpression("^#([0-9A-Fa-f]{6})$", ErrorMessage = "Farven skal være en gyldig HEX-kode, fx #FF0000.")]
         public string Color { get; set; } = string.Empty;
     }
 }

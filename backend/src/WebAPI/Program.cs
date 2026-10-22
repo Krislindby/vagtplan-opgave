@@ -28,6 +28,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmploymentRepository, EmploymentRepository>();
 builder.Services.AddScoped<IEmploymentService, EmploymentService>();
+builder.Services.AddScoped<IStaffService, StaffService>();
+
 
 builder.Services.AddCors(options =>
 {
@@ -51,7 +53,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseCors("frontend");
 
 app.MapControllers();

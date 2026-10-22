@@ -29,18 +29,29 @@ namespace Application.Services
 
         public async Task<StaffGroupDto> CreateAsync(SaveStaffGroupDto dto)
         {
-            var staffGroup = new StaffGroup { Name = dto.Name };
+            var name = dto.Name.Trim();
 
+            if (await _repository.NameExistsAsync(name))
+                throw new ArgumentException("Der findes allerede en personalegruppe med det navn.");
+
+            var staffGroup = new StaffGroup { Name = name };
+            
             await _repository.AddAsync(staffGroup);
             return MapToDto(staffGroup);
         }
 
         public async Task UpdateAsync(Guid id, SaveStaffGroupDto dto)
         {
-            var staffGroup = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Staff group with id {id} not found.");
+            var name = dto.Name.Trim();
 
-            staffGroup.Name = dto.Name;
+            var staffGroup = await _repository.GetByIdAsync(id)
+                ?? throw new KeyNotFoundException($"Personalegruppen med id {id} blev ikke fundet.");
+
+            if (await _repository.NameExistsAsync(name, id))
+                throw new ArgumentException("Der findes allerede en personalegruppe med det navn.");
+
+
+            staffGroup.Name = name;
 
             await _repository.UpdateAsync(staffGroup);
         }
@@ -48,11 +59,11 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             var staffGroup = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Staff group with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Personalegruppen med id {id} blev ikke fundet.");
 
             //Opgavens regel: personalegrupper med tilknyttede ansættelser må ikke slettes.
             if (await _repository.HasEmploymentsAsync(id))
-                throw new ArgumentException("The staff group cannot be deleted because it has employments.");
+                throw new ArgumentException("Personalegruppen kan ikke slettes, fordi der er tilknyttede ansættelser.");
 
             await _repository.DeleteAsync(staffGroup);
         }

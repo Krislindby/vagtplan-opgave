@@ -30,8 +30,15 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<WardDto>> Create(SaveWardDto dto)
         {
-            var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            try
+            {
+                var created = await _service.CreateAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
@@ -45,6 +52,10 @@ namespace WebAPI.Controllers
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
 

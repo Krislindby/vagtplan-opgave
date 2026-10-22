@@ -61,7 +61,7 @@ namespace Application.Services
         public async Task UpdateAsync(Guid id, SaveEmploymentDto dto)
         {
             var employment = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Employment with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Ansættelsen med id {id} blev ikke fundet.");
 
             //Ansættelsens eget id sendes med, så den ikke tæller som overlap med sig selv.
             await ValidateAsync(dto, id);
@@ -79,7 +79,7 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             var employment = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Employment with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Ansættelsen med id {id} blev ikke fundet.");
 
             await _repository.DeleteAsync(employment);
         }
@@ -88,22 +88,22 @@ namespace Application.Services
         private async Task ValidateAsync(SaveEmploymentDto dto, Guid? excludeId)
         {
             if (dto.StartDate >= dto.EndDate)
-                throw new ArgumentException("End date must be after start date.");
+                throw new ArgumentException("Slutdato skal være efter startdato.");
 
             var user = await _userRepository.GetByIdAsync(dto.UserId)
-                ?? throw new ArgumentException("The selected user does not exist.");
+                ?? throw new ArgumentException("Den valgte bruger findes ikke.");
 
             if (!user.IsStaff)
-                throw new ArgumentException("The selected user must have the staff role.");
+                throw new ArgumentException("Den valgte bruger skal have rollen Personale.");
 
             if (await _wardRepository.GetByIdAsync(dto.WardId) is null)
-                throw new ArgumentException("The selected ward does not exist.");
+                throw new ArgumentException("Det valgte afsnit findes ikke.");
 
             if (await _staffGroupRepository.GetByIdAsync(dto.StaffGroupId) is null)
-                throw new ArgumentException("The selected staff group does not exist.");
+                throw new ArgumentException("Den valgte personalegruppe findes ikke.");
 
             if (await _repository.HasOverlapAsync(dto.UserId, dto.StartDate, dto.EndDate, excludeId))
-                throw new ArgumentException("The user already has an employment in this period.");
+                throw new ArgumentException("Brugeren har allerede en ansættelse i denne periode.");
         }
 
         //Navnene tages fra de relaterede entiteter, så tabellen kan vise dem direkte.

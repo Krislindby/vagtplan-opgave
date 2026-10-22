@@ -6,7 +6,7 @@ namespace Domain.DTO.PlanningPeriods
     public class SavePlanningPeriodDto
     {
         [Required]
-        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        [StringLength(100, ErrorMessage = "Navn må højst være 100 tegn.")]
         public string Name { get; set; } = string.Empty;
         
         [Required]

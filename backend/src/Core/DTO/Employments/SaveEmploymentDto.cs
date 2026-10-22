@@ -14,7 +14,7 @@ namespace Domain.DTO
         [Required]
         public Guid StaffGroupId { get; set; }
 
-        [Range(0, 37, ErrorMessage = "Hours per week must be a whole number between 0 and 37.")]
+        [Range(0, 37, ErrorMessage = "Timer pr. uge skal være et helt tal mellem 0 og 37.")]
         public int HoursPerWeek { get; set; }
 
         [Required]

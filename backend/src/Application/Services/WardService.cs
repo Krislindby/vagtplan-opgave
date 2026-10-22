@@ -29,9 +29,17 @@ namespace Application.Services
 
         public async Task<WardDto> CreateAsync(SaveWardDto dto)
         {
+            var name = dto.Name.Trim();
+
+            if (await _repository.ColorExistsAsync(dto.Color))
+                throw new ArgumentException("Farven er allerede i brug af et andet afsnit.");
+           
+            if (await _repository.NameExistsAsync(name))
+                throw new ArgumentException("Der findes allerede et afsnit med det navn.");
+            
             var ward = new Ward
             {
-                Name = dto.Name,
+                Name = name,
                 Color = dto.Color
             };
 
@@ -41,11 +49,19 @@ namespace Application.Services
 
         public async Task UpdateAsync(Guid id, SaveWardDto dto)
         {
-            var ward = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Ward with id {id} not found.");
+            var name = dto.Name.Trim();
 
-            ward.Name = dto.Name;
+            var ward = await _repository.GetByIdAsync(id)
+                ?? throw new KeyNotFoundException($"Afsnittet med id {id} blev ikke fundet.");
+
+            ward.Name = name;
             ward.Color = dto.Color;
+
+            if (await _repository.NameExistsAsync(name, id))
+                throw new ArgumentException("Der findes allerede et afsnit med det navn.");
+
+            if (await _repository.ColorExistsAsync(dto.Color, id))
+                throw new ArgumentException("Farven er allerede i brug af et andet afsnit.");
 
             await _repository.UpdateAsync(ward);
         }
@@ -53,11 +69,11 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             var ward = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Ward with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Afsnittet med id {id} blev ikke fundet.");
 
             //Opgavens regel: afsnit med tilknyttede ansættelser må ikke slettes.
             if (await _repository.HasEmploymentsAsync(id))
-                throw new ArgumentException("The ward cannot be deleted because it has employments.");
+                throw new ArgumentException("Afsnittet kan ikke slettes, fordi der er tilknyttede ansættelser.");
 
             await _repository.DeleteAsync(ward);
         }

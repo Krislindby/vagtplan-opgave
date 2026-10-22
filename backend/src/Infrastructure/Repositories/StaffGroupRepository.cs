@@ -40,5 +40,10 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> HasEmploymentsAsync(Guid staffGroupId)
             => await _context.Employments.AnyAsync(e => e.StaffGroupId == staffGroupId);
+
+        public async Task<bool> NameExistsAsync(string name, Guid? excludeId = null)
+            => await _context.StaffGroups
+                .Where(s => excludeId == null || s.Id != excludeId)
+                .AnyAsync(s => s.Name.ToLower() == name.ToLower());
     }
 }

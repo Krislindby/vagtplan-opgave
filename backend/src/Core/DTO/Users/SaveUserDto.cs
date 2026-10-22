@@ -6,12 +6,12 @@ namespace Domain.DTO
     public class SaveUserDto
     {
         [Required]
-        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+        [StringLength(100, ErrorMessage = "Navn må højst være 100 tegn.")]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [EmailAddress(ErrorMessage = "Email must be a valid email address.")]
-        [StringLength(200, ErrorMessage = "Email cannot exceed 200 characters.")]
+        [EmailAddress(ErrorMessage = "E-mail skal være en gyldig e-mailadresse.")]
+        [StringLength(200, ErrorMessage = "E-mail må højst være 200 tegn.")]
         public string Email { get; set; } = string.Empty;
 
         public bool IsAdmin { get; set; }

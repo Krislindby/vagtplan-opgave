@@ -30,6 +30,15 @@ namespace Infrastructure.Repositories
                 .Include(e => e.StaffGroup)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
+        public async Task<IEnumerable<Employment>> GetOverlappingAsync(DateOnly startDate, DateOnly endDate)
+            => await _context.Employments
+                .Include(e => e.User)
+                .Include(e => e.Ward)
+                .Include(e => e.StaffGroup)
+                .Where(e => e.StartDate <= endDate && startDate <= e.EndDate)
+                .OrderBy(e => e.User!.Name)
+                .ToListAsync();
+
         public async Task AddAsync(Employment employment)
         {
             _context.Employments.Add(employment);
@@ -53,5 +62,6 @@ namespace Infrastructure.Repositories
                 .Where(e => e.UserId == userId)
                 .Where(e => excludeId == null || e.Id != excludeId)
                 .AnyAsync(e => e.StartDate <= endDate && startDate <= e.EndDate);
+
     }
 }

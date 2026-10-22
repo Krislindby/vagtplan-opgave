@@ -40,5 +40,15 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> HasEmploymentsAsync(Guid wardId)
             => await _context.Employments.AnyAsync(e => e.WardId == wardId);
+
+        public async Task<bool> ColorExistsAsync(string color, Guid? excludeId = null)
+            => await _context.Wards
+                .Where(w => excludeId == null || w.Id != excludeId)
+                .AnyAsync(w => w.Color == color);
+
+        public async Task<bool> NameExistsAsync(string name, Guid? excludeId = null)
+            => await _context.Wards
+                .Where(w => excludeId == null || w.Id != excludeId)
+                .AnyAsync(w => w.Name.ToLower() == name.ToLower());
     }
 }
