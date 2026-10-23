@@ -44,7 +44,7 @@ namespace Application.Services
         public async Task UpdateAsync(Guid id, SavePlanningPeriodDto dto)
         {
             var period = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Planning period with id {id} not found.");
+                ?? throw new KeyNotFoundException($"Perioden med id {id} blev ikke fundet.");
 
             //Periodens eget id sendes med, så den ikke tæller som overlap med sig selv.
             await ValidateAsync(dto, id);

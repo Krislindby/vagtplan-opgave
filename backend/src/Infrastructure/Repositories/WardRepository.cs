@@ -47,8 +47,15 @@ namespace Infrastructure.Repositories
                 .AnyAsync(w => w.Color == color);
 
         public async Task<bool> NameExistsAsync(string name, Guid? excludeId = null)
-            => await _context.Wards
+        {
+            //SQLite kan kun ignorere store og små bogstaver for a-z, ikke for æ, ø og å.
+            //Derfor hentes navnene ind og sammenlignes i C#, hvor hele alfabetet tæller med.
+            var names = await _context.Wards
                 .Where(w => excludeId == null || w.Id != excludeId)
-                .AnyAsync(w => w.Name.ToLower() == name.ToLower());
+                .Select(w => w.Name)
+                .ToListAsync();
+
+            return names.Any(n => string.Equals(n, name, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

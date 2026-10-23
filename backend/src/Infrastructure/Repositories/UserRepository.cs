@@ -39,10 +39,16 @@ namespace Infrastructure.Repositories
         }
 
         public async Task<bool> EmailExistsAsync(string email, Guid? excludeId = null)
-            => await _context.Users
+        {
+            //Sammenlignes i C#, så store og små bogstaver ignoreres for hele alfabetet.
+            //I praksis er e-mail ikke versalfølsom, så Emil@... og emil@... er samme bruger.
+            var emails = await _context.Users
                 .Where(u => excludeId == null || u.Id != excludeId)
-                .AnyAsync(u => u.Email == email);
+                .Select(u => u.Email)
+                .ToListAsync();
 
+            return emails.Any(e => string.Equals(e, email, StringComparison.OrdinalIgnoreCase));
+        }
         public async Task<bool> HasEmploymentsAsync(Guid userId)
             => await _context.Employments.AnyAsync(e => e.UserId == userId);
     }
