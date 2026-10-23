@@ -110,9 +110,25 @@ export default function EmploymentsSection() {
     { key: "user", header: "Person", value: (e) => e.userName },
     { key: "ward", header: "Afsnit", value: (e) => e.wardName, filterable: true },
     { key: "staffGroup", header: "Personalegruppe", value: (e) => e.staffGroupName, filterable: true },
-    { key: "hours", header: "Timer/uge", value: (e) => String(e.hoursPerWeek) },
-    { key: "start", header: "Start", value: (e) => formatDate(e.startDate) },
-    { key: "end", header: "Slut", value: (e) => formatDate(e.endDate) },
+    {
+      key: "hours",
+      header: "Timer/uge",
+      value: (e) => String(e.hoursPerWeek),
+      sortValue: (e) => e.hoursPerWeek,
+    },
+    {
+      key: "start",
+      header: "Start",
+      value: (e) => formatDate(e.startDate),
+      //Sorterer på datoen fra API'et (2026-12-01), ikke på den viste tekst (01-12-2026).
+      sortValue: (e) => e.startDate,
+    },
+    {
+      key: "end",
+      header: "Slut",
+      value: (e) => formatDate(e.endDate),
+      sortValue: (e) => e.endDate,
+    },
   ];
 
   return (
@@ -171,7 +187,7 @@ export default function EmploymentsSection() {
                 onChange={(e) => setForm({ ...form, wardId: e.target.value })}
                 className="w-56 rounded-md border border-slate-300 px-3 py-2 text-sm"
               >
-                                <option value="">Vælg afsnit</option>
+                <option value="">Vælg afsnit</option>
                 {wards.map((w) => (
                   <option key={w.id} value={w.id}>{w.name}</option>
                 ))}
@@ -193,7 +209,7 @@ export default function EmploymentsSection() {
                 onChange={(e) => setForm({ ...form, staffGroupId: e.target.value })}
                 className="w-56 rounded-md border border-slate-300 px-3 py-2 text-sm"
               >
-                                <option value="">Vælg personalegruppe</option>
+                <option value="">Vælg personalegruppe</option>
                 {staffGroups.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -227,6 +243,7 @@ export default function EmploymentsSection() {
               <input
                 required
                 type="date"
+                max={form.endDate}
                 value={form.startDate}
                 onChange={(e) => setForm({ ...form, startDate: e.target.value })}
                 className="rounded-md border border-slate-300 px-3 py-2 text-sm"
@@ -271,8 +288,9 @@ export default function EmploymentsSection() {
         rows={employments}
         onEdit={startEdit}
         onDelete={handleDelete}
-        emptyText="Ingen ansættelser oprettet endnu."
+        emptyText="Der er ingen ansættelser lige nu."
         loading={loading}
+        defaultSortKey="start"
       />
     </div>
   );

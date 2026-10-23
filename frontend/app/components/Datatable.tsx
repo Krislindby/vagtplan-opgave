@@ -6,6 +6,9 @@ export interface Column<T> {
   value: (row: T) => string;
   //Valgfri: vis noget andet end teksten, fx en farveprik. Søgning og sortering bruger stadig value.
   render?: (row: T) => React.ReactNode;
+  //Valgfri: sortér på en anden værdi end den viste. Bruges til datoer, hvor "01-12-2026"
+  //sorterer forkert som tekst, mens "2026-12-01" sorterer rigtigt.
+  sortValue?: (row: T) => string | number;
   filterable?: boolean;
 }
 
@@ -16,6 +19,8 @@ interface Props<T> {
   onDelete?: (row: T) => void;
   emptyText?: string;
   loading?: boolean;
+  //Valgfri: hvilken kolonne tabellen er sorteret på, før brugeren klikker på noget.
+  defaultSortKey?: string;
 }
 
 export default function DataTable<T extends { id: string }>({
@@ -25,10 +30,11 @@ export default function DataTable<T extends { id: string }>({
   onDelete,
   emptyText = "Ingen rækker endnu.",
   loading = false,
+  defaultSortKey,
 }: Props<T>) {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<string | null>(defaultSortKey ?? null);
   const [sortAsc, setSortAsc] = useState(true);
 
   const visibleRows = useMemo(() => {
@@ -49,18 +55,24 @@ export default function DataTable<T extends { id: string }>({
       if (column) result = result.filter((row) => column.value(row) === selected);
     }
 
-    //Sortering: tal sammenlignes som tal, resten som tekst.
+    //Sortering: sortValue bruges, hvis kolonnen har en. Tal sammenlignes som tal,
+    //resten som tekst med dansk alfabet.
     if (sortKey) {
       const column = columns.find((c) => c.key === sortKey);
       if (column) {
+        const sortOn = column.sortValue ?? column.value;
+
         result = [...result].sort((a, b) => {
-          const left = column.value(a);
-          const right = column.value(b);
-          const asNumbers = Number(left) - Number(right);
-          const compared =
-            !isNaN(asNumbers) && left !== "" && right !== ""
-              ? asNumbers
-              : left.localeCompare(right, "da");
+          const left = sortOn(a);
+          const right = sortOn(b);
+
+          let compared: number;
+          if (typeof left === "number" && typeof right === "number") {
+            compared = left - right;
+          } else {
+            compared = String(left).localeCompare(String(right), "da");
+          }
+
           return compared * (sortAsc ? 1 : -1);
         });
       }
@@ -78,9 +90,9 @@ export default function DataTable<T extends { id: string }>({
     }
   }
 
-    function distinctValues(column: Column<T>) {
+  function distinctValues(column: Column<T>) {
     return [...new Set(rows.map((r) => column.value(r)))];
-}
+  }
 
   const filterableColumns = columns.filter((c) => c.filterable);
 

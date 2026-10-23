@@ -76,12 +76,30 @@ export default function Periods() {
     }
   }
 
-  const columns: Column<PlanningPeriod>[] = [
-    { key: "name", header: "Navn", value: (p) => p.name, filterable: true },
-    { key: "start", header: "Start", value: (p) => formatDate(p.startDate) },
-    { key: "end", header: "Slut", value: (p) => formatDate(p.endDate) },
+   const columns: Column<PlanningPeriod>[] = [
+    {
+      key: "name",
+      header: "Navn",
+      value: (p) => p.name,
+      //En periodes navn er en etiket på et tidsrum, så alfabetisk sortering ville give
+      //"December 2026" før "Januar 2025". Derfor sorteres der kronologisk i stedet.
+      sortValue: (p) => p.startDate,
+      filterable: true,
+    },
+    {
+      key: "start",
+      header: "Start",
+      value: (p) => formatDate(p.startDate),
+      //Sorterer på datoen fra API'et (2026-12-01), ikke på den viste tekst (01-12-2026).
+      sortValue: (p) => p.startDate,
+    },
+    {
+      key: "end",
+      header: "Slut",
+      value: (p) => formatDate(p.endDate),
+      sortValue: (p) => p.endDate,
+    },
   ];
-
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -170,8 +188,9 @@ export default function Periods() {
         rows={periods}
         onEdit={startEdit}
         onDelete={handleDelete}
-        emptyText="Der er ingen perioder."
+        emptyText="Der er ingen perioder lige nu."
         loading={loading}
+        defaultSortKey="start"
       />
     </div>
   );
