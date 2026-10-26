@@ -1,4 +1,4 @@
-# FairPlan — stamdata til vagtplanlægning
+# Stamdata til vagtplanlægning
 
 Webapplikation til at vedligeholde de stamdata, en vagtplan bygger på: hvilke
 perioder der planlægges for, hvilke afsnit og personalegrupper hospitalet har,
